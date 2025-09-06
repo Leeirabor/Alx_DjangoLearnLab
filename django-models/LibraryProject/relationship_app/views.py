@@ -8,7 +8,6 @@ def list_books(request):
     return render(request, "list_books.html", {"books": books})
 
 # Class-based view: Show details of a specific library
-class LibraryDetailView(DetailView):
-    model = Library
-    template_name = "library_detail.html"
-    context_object_name = "library"
+def list_books(request):
+    books = Book.objects.all()
+    return render(request, "relationship_app/list_books.html", {"books": books})
