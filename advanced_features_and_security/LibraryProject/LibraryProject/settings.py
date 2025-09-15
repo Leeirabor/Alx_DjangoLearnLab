@@ -59,6 +59,32 @@ MIDDLEWARE = [
 
 SECURE_BROWSER_XSS_FILTER = True
 
+X_FRAME_OPTIONS = "DENY"
+
+# Prevent content sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Cookie security - require HTTPS in production
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# If you want cookies to be HttpOnly (not accessible to JavaScript)
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False  # keep False: CSRF token needs to be read by JS sometimes
+
+# Security settings
+X_FRAME_OPTIONS = "DENY"                 # Prevent clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True       # Prevent MIME-type sniffing
+CSRF_COOKIE_SECURE = True                # Send CSRF cookies only over HTTPS
+SESSION_COOKIE_SECURE = True             # Send session cookies only over HTTPS
+
+# HSTS (HTTP Strict Transport Security) - enable only on production with HTTPS
+SECURE_HSTS_SECONDS = 31536000  # 1 year - enable when you have HTTPS
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+
+
 AUTH_USER_MODEL = "bookshelf.CustomUser"
 
 
