@@ -9,6 +9,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import permission_required
 
 from django.contrib.auth.decorators import user_passes_test
 from .models import UserProfile
@@ -65,6 +67,40 @@ def is_librarian(user):
 def is_member(user):
     return hasattr(user, "userprofile") and user.userprofile.role == "Member"
 
+# Example simple form handling (replace with ModelForm in real case)
+
+@permission_required("relationship_app.can_add_book", raise_exception=True)
+def add_book(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        author = request.POST.get("author")
+        published_date = request.POST.get("published_date")
+        isbn = request.POST.get("isbn")
+        Book.objects.create(title=title, author=author, published_date=published_date, isbn=isbn)
+        return redirect("book-list")
+    return render(request, "relationship_app/add_book.html")
+
+
+@permission_required("relationship_app.can_change_book", raise_exception=True)
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == "POST":
+        book.title = request.POST.get("title")
+        book.author = request.POST.get("author")
+        book.published_date = request.POST.get("published_date")
+        book.isbn = request.POST.get("isbn")
+        book.save()
+        return redirect("book-list")
+    return render(request, "relationship_app/edit_book.html", {"book": book})
+
+
+@permission_required("relationship_app.can_delete_book", raise_exception=True)
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == "POST":
+        book.delete()
+        return redirect("book-list")
+    return render(request, "relationship_app/delete_book.html", {"book": book})
 
 # Views restricted by role
 @user_passes_test(is_admin)
