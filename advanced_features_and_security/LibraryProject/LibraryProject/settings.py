@@ -51,7 +51,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+AUTH_USER_MODEL = "bookshelf.CustomUser"
+
+
 AUTH_USER_MODEL = "relationship_app.CustomUser"
+
 
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -130,3 +135,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = "bookshelf.CustomUser"
