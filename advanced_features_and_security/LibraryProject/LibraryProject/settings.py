@@ -83,6 +83,60 @@ SECURE_HSTS_SECONDS = 31536000  # 1 year - enable when you have HTTPS
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
+# -----------------------
+# Production security settings
+# -----------------------
+
+# IMPORTANT: set DEBUG = False in production
+DEBUG = False
+
+# Hosts allowed to serve your site (add your domain(s) here)
+ALLOWED_HOSTS = ["yourdomain.com", "www.yourdomain.com"]
+
+import os
+
+ENV = os.environ.get("DJANGO_ENV", "development")  # "production" on live server
+
+if ENV == "production":
+    DEBUG = False
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+else:
+    DEBUG = True
+    SECURE_SSL_REDIRECT = False
+    SECURE_HSTS_SECONDS = 0
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+
+# Redirect all HTTP -> HTTPS
+SECURE_SSL_REDIRECT = True
+# If you sit behind a proxy (nginx) that performs SSL termination, set SECURE_PROXY_SSL_HEADER:
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# HTTP Strict Transport Security (HSTS)
+# Only enable long HSTS after verifying HTTPS works. Start with a low value for testing.
+SECURE_HSTS_SECONDS = 31536000   # 1 year in seconds (set to 0 while testing)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Cookies: only send cookies via HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Make session cookie HttpOnly (not accessible to JS)
+SESSION_COOKIE_HTTPONLY = True
+
+# Browser protections
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Optional: force secure referrer policy (restricts Referer)
+SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret")
 
 
 AUTH_USER_MODEL = "bookshelf.CustomUser"
