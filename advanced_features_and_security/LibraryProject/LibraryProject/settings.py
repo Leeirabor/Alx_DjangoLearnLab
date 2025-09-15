@@ -51,6 +51,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTH_USER_MODEL = "relationship_app.CustomUser"
+
+
 ROOT_URLCONF = 'LibraryProject.urls'
 
 LOGIN_URL = "login"
