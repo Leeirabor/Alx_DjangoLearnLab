@@ -12,6 +12,31 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import BookForm
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import permission_required
+from .models import Book
+from .forms import ExampleForm   # ✅ Import ExampleForm
+
+
+# Example form view (safe input handling with CSRF)
+def example_form_view(request):
+    form = ExampleForm(request.POST or None)
+    results = None
+
+    if request.method == "POST" and form.is_valid():
+        query = form.cleaned_data['search_query']
+        # Safe ORM query instead of raw SQL (avoids SQL injection)
+        results = Book.objects.filter(title__icontains=query)
+
+    return render(request, "bookshelf/form_example.html", {"form": form, "results": results})
+
+
+# Example book list (permission restricted)
+@permission_required('bookshelf.can_view', raise_exception=True)
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, "bookshelf/book_list.html", {"books": books})
+
 
 @permission_required("bookshelf.can_create", raise_exception=True)
 def add_book(request):
