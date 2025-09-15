@@ -39,11 +39,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
         # Third-party
     'rest_framework',
-
+    'rest_framework.authtoken',  # Enable token auth
     # Local apps
     'api',
 
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Optional (for browsable API)
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Require login/token by default
+    ],
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

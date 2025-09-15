@@ -3,6 +3,7 @@ from .views import BookList
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import BookList, BookViewSet
+from rest_framework.authtoken.views import obtain_auth_token
 
 # Create router instance
 router = DefaultRouter()
