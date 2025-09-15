@@ -6,7 +6,23 @@ from django.contrib.auth.decorators import permission_required
 from .models import Book
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
-from .models import Book
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .forms import BookForm
+
+
+@permission_required("bookshelf.can_create", raise_exception=True)
+def add_book(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()  # safe: cleaned fields used by ModelForm
+            return redirect("book_list")
+    else:
+        form = BookForm()
+    return render(request, "bookshelf/add_book.html", {"form": form})
 
 # View books (requires can_view)
 @permission_required("bookshelf.can_view", raise_exception=True)
@@ -80,3 +96,16 @@ def delete_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     book.delete()
     return redirect("book_list")
+from django import forms
+
+class SearchForm(forms.Form):
+    q = forms.CharField(max_length=100, required=False)
+
+def search_books(request):
+    form = SearchForm(request.GET)
+    books = Book.objects.none()
+    if form.is_valid():
+        q = form.cleaned_data["q"]
+        # use ORM, not raw SQL or string concat
+        books = Book.objects.filter(title__icontains=q)
+    return render(request, "bookshelf/search.html", {"form": form, "books": books})

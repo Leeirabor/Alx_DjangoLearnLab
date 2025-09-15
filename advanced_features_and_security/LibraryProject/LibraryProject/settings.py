@@ -41,6 +41,12 @@ INSTALLED_APPS = [
     "relationship_app", 
 ]
 
+DEBUG = False 
+
+
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SECURE_BROWSER_XSS_FILTER = True
 
 AUTH_USER_MODEL = "bookshelf.CustomUser"
 
