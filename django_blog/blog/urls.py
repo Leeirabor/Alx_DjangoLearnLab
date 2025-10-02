@@ -21,5 +21,6 @@ urlpatterns = [
     path("post/<int:pk>/comments/new/", CommentCreateView.as_view(), name="comment-create"),
     path('tags/<str:tag_name>/', views.PostsByTagListView.as_view(), name='posts-by-tag'),
     path('search/', views.SearchResultsView.as_view(), name='search-results'),
+    path("tags/<slug:tag_slug>/", views.PostByTagListView.as_view(), name="posts_by_tag"),
 ]
    # keep any auth URLs (login/register/profile) her
