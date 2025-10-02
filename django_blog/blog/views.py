@@ -18,6 +18,104 @@ from .models import Post, Comment
 from .forms import CommentForm
 
 from django.views.generic import CreateView
+from .models import Post, Tag
+from .forms import PostForm, CommentForm
+
+# blog/views.py (add imports)
+from django.db.models import Q
+from django.views.generic import ListView
+
+# Posts filtered by tag
+class PostsByTagListView(ListView):
+    model = Post
+    template_name = "blog/posts_by_tag.html"
+    context_object_name = "posts"
+    paginate_by = 10
+
+    def get_queryset(self):
+        tag_name = self.kwargs.get('tag_name', '').lower()
+        return Post.objects.filter(tags__name=tag_name).order_by('-published_date')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['tag_name'] = self.kwargs.get('tag_name', '')
+        return ctx
+
+
+# Search view
+class SearchResultsView(ListView):
+    model = Post
+    template_name = "blog/search_results.html"
+    context_object_name = "posts"
+    paginate_by = 10
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '').strip()
+        if not query:
+            return Post.objects.none()
+        # search in title, content and tag names
+        return Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct().order_by('-published_date')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['query'] = self.request.GET.get('q', '')
+        return ctx
+
+
+# PostCreateView (excerpt)
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = "blog/post_form.html"
+    success_url = reverse_lazy("post-list")
+    login_url = "login"
+
+    def form_valid(self, form):
+        # set author then save instance (without m2m)
+        form.instance.author = self.request.user
+        response = super().form_valid(form)  # saves self.object
+        # handle tags (comma-separated)
+        tag_string = form.cleaned_data.get('tags', '')
+        self.object.tags.clear()
+        if tag_string:
+            tag_names = [t.strip().lower() for t in tag_string.split(',') if t.strip()]
+            for name in tag_names:
+                tag_obj, _ = Tag.objects.get_or_create(name=name)
+                self.object.tags.add(tag_obj)
+        return response
+
+    def get_initial(self):
+        return super().get_initial()
+
+# PostUpdateView (excerpt)
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = "blog/post_form.html"
+    success_url = reverse_lazy("post-list")
+    login_url = "login"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        # prefill tags as comma-separated string
+        initial['tags'] = ', '.join([t.name for t in self.get_object().tags.all()])
+        return initial
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        tag_string = form.cleaned_data.get('tags', '')
+        self.object.tags.clear()
+        if tag_string:
+            tag_names = [t.strip().lower() for t in tag_string.split(',') if t.strip()]
+            for name in tag_names:
+                tag_obj, _ = Tag.objects.get_or_create(name=name)
+                self.object.tags.add(tag_obj)
+        return response
+
 
 
 

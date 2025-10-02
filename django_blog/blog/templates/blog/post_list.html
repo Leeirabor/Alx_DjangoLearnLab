@@ -16,6 +16,13 @@
       <li>No posts yet.</li>
     {% endfor %}
   </ul>
+  <p>
+  Tags:
+  {% for tag in post.tags.all %}
+    <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>
+  {% empty %} - {% endfor %}
+</p>
+
 
   {% if is_paginated %}
     <div class="pagination">

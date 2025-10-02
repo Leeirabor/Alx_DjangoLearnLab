@@ -5,6 +5,25 @@ from django.contrib.auth.models import User
 from .models import Post
 
 from .models import Comment
+from .models import Post, Comment
+
+class PostForm(forms.ModelForm):
+    tags = forms.CharField(
+        required=False,
+        help_text="Comma-separated tags. Example: django,python,web",
+        widget=forms.TextInput(attrs={"placeholder": "e.g. django, python"})
+    )
+
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+
 
 class CommentForm(forms.ModelForm):
     class Meta:

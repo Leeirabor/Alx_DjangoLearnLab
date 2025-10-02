@@ -1,0 +1,14 @@
+Tagging & Search features
+- Models:
+  - Tag (name)
+  - Post.tags: ManyToManyField to Tag
+- Adding tags:
+  - On create/edit post, enter comma-separated names in the "tags" field. New tags are created automatically.
+- URLs:
+  - /tags/<tag_name>/  -> posts with that tag
+  - /search/?q=term     -> search posts by title/content/tags
+- Templates:
+  - Post detail and list pages display tags. Tags link to /tags/<tag_name>/
+- Notes:
+  - Tag names are lowercased on save to avoid duplicates.
+  - Search uses icontains (case-insensitive) across title, content, and tag name.

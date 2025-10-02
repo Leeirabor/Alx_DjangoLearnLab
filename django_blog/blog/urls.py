@@ -19,6 +19,7 @@ urlpatterns = [
     path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment-delete'),
     path("post/<int:pk>/comment/new/", CommentCreateView.as_view(), name="comment-create"),
     path("post/<int:pk>/comments/new/", CommentCreateView.as_view(), name="comment-create"),
-
-   # keep any auth URLs (login/register/profile) her
+    path('tags/<str:tag_name>/', views.PostsByTagListView.as_view(), name='posts-by-tag'),
+    path('search/', views.SearchResultsView.as_view(), name='search-results'),
 ]
+   # keep any auth URLs (login/register/profile) her
