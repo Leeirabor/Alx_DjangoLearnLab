@@ -68,6 +68,10 @@ TEMPLATES = [
     },
 ]
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]  # point to your static directory
+
+
 WSGI_APPLICATION = 'django_blog.wsgi.application'
 
 
