@@ -1,3 +1,4 @@
+# blog/urls.py
 from django.urls import path
 from .views import register_view, profile_view, CustomLoginView, CustomLogoutView
 
