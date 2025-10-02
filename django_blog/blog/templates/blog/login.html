@@ -1,11 +1,10 @@
 {% extends "blog/base.html" %}
-{% load static %}
-{% block title %}Profile{% endblock %}
+{% block title %}Login{% endblock %}
 {% block content %}
-<h2>Your Profile</h2>
+<h2>Login</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Update Profile</button>
+  <button type="submit">Login</button>
 </form>
 {% endblock %}
