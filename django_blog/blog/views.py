@@ -17,6 +17,26 @@ from django.urls import reverse_lazy
 from .models import Post, Comment
 from .forms import CommentForm
 
+from django.views.generic import CreateView
+
+
+
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        # get post id from URL
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()  # redirect back to post detail page
+
+
 def add_comment(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == 'POST':
