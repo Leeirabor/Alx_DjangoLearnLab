@@ -6,6 +6,16 @@ from .models import Post
 
 from .models import Comment
 from .models import Post, Comment
+from taggit.forms import TagWidget   # ← import TagWidget
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+        widgets = {
+            'tags': TagWidget(),   # ← use TagWidget for better UX
+        }
+
 
 class PostForm(forms.ModelForm):
     class Meta:
