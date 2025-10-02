@@ -8,10 +8,10 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('profile/', views.profile_view, name='profile'),
-    path('posts/', views.PostListView.as_view(), name='post-list'),                 # / or /posts/
-    path('posts/<int:pk>/', views.PostDetailView.as_view(), name='post-detail'), # /posts/1/
-    path('posts/new/', views.PostCreateView.as_view(), name='post-create'),    # /posts/new/
-    path('posts/<int:pk>/edit/', views.PostUpdateView.as_view(), name='post-update'),  # /posts/1/edit/
-    path('posts/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'), # /posts/1/delete/
-    # keep any auth URLs (login/register/profile) her
+    path('posts/', views.PostListView.as_view(), name='post-list'),
+    path('post/new/', views.PostCreateView.as_view(), name='post-create'),
+    path('post/<int:pk>/', views.PostDetailView.as_view(), name='post-detail'),
+    path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='post-update'),
+    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
+   # keep any auth URLs (login/register/profile) her
 ]
