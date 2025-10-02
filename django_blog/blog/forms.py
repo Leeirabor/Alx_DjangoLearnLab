@@ -8,6 +8,12 @@ from .models import Comment
 from .models import Post, Comment
 
 class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+
+
+class PostForm(forms.ModelForm):
     tags = forms.CharField(
         required=False,
         help_text="Comma-separated tags. Example: django,python,web",
