@@ -10,7 +10,9 @@ urlpatterns = [
     path('unfollow/<int:user_id>/', UnfollowUserView.as_view(), name='unfollow-user'),
     # or toggle:
     path('follow-toggle/<int:user_id>/', FollowToggleView.as_view(), name='follow-toggle'),
+     path('feed/', views.FeedView.as_view(), name='feed'),
 ]
+
 router = DefaultRouter()
 router.register(r"posts", PostViewSet, basename="post")
 router.register(r"comments", CommentViewSet, basename="comment")
