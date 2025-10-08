@@ -21,4 +21,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/accounts/", include("accounts.urls")),   # existing accounts endpoints
     path("api/", include("posts.urls")),
+    path("api/notifications/", include("notifications.urls")),
     ]

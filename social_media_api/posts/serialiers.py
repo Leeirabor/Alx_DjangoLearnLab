@@ -22,6 +22,18 @@ class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)  # nested read-only list
     comments_count = serializers.SerializerMethodField()
 
+# posts/serializers.py (append)
+from rest_framework import serializers
+from .models import Like
+
+class LikeSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Like
+        fields = ("id", "post", "user", "created_at")
+        read_only_fields = ("id", "user", "created_at")
+
     class Meta:
         model = Post
         fields = [

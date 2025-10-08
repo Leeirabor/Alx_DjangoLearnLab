@@ -10,7 +10,10 @@ urlpatterns = [
     path('unfollow/<int:user_id>/', UnfollowUserView.as_view(), name='unfollow-user'),
     # or toggle:
     path('follow-toggle/<int:user_id>/', FollowToggleView.as_view(), name='follow-toggle'),
-     path('feed/', views.FeedView.as_view(), name='feed'),
+    path('feed/', views.FeedView.as_view(), name='feed'),
+    path("posts/<int:pk>/like/", LikePostView.as_view(), name="post-like"),
+    path("posts/<int:pk>/unlike/", UnlikePostView.as_view(), name="post-unlike"),
+
 ]
 
 router = DefaultRouter()

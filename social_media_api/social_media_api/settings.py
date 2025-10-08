@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework","django_filters",
     "accounts",
     "posts",
+    "notifications",
 ]
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent

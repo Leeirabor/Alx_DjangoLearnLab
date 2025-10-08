@@ -17,6 +17,50 @@ from django.db.models import Q
 from .models import Post
 from django.views.generic import ListView
 from .models import Post
+# posts/views.py (imports)
+from rest_framework import permissions, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Post, Like
+from .serializers import LikeSerializer
+from django.shortcuts import get_object_or_404
+from django.contrib.contenttypes.models import ContentType
+from notifications.models import Notification
+
+class LikePostView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        if not created:
+            return Response({"detail": "Already liked."}, status=status.HTTP_400_BAD_REQUEST)
+        # create notification for post author (don't notify yourself)
+        if post.author != request.user:
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked",
+                target_content_type=ContentType.objects.get_for_model(post),
+                target_object_id=str(post.pk),
+            )
+        serializer = LikeSerializer(like, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UnlikePostView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        try:
+            like = Like.objects.get(post=post, user=request.user)
+            like.delete()
+            # optionally create an "unliked" notification or remove the like notification — we'll not create a notification for unlike
+            return Response({"detail": "Unliked."}, status=status.HTTP_200_OK)
+        except Like.DoesNotExist:
+            return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class FeedView(ListView):
     model = Post
