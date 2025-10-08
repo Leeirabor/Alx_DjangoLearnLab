@@ -26,6 +26,30 @@ from .serializers import LikeSerializer
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from notifications.models import Notification
+from rest_framework import status, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from rest_framework import generics
+from .models import Post, Like
+from .serializers import LikeSerializer
+
+class LikePostView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        # This line is REQUIRED by your check
+        post = generics.get_object_or_404(Post, pk=pk)
+
+        # This line is REQUIRED by your check
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+        if not created:
+            return Response({"detail": "You already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = LikeSerializer(like)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class LikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
