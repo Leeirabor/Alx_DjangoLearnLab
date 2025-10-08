@@ -10,6 +10,25 @@ from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsAuthorOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.response import Response
+# posts/views.py
+from rest_framework import generics, permissions
+from django.conf import settings
+from django.db.models import Q
+from .models import Post
+
+
+class FeedListView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]   # only authenticated users have a feed
+    pagination_class = None   # optional: let DRF default pagination apply if you set it in settings
+
+    def get_queryset(self):
+        user = self.request.user
+        # posts by users this user follows
+        # if you want to include the user's own posts in the feed, add user to the queryset:
+        # following_qs = user.following.all() | User.objects.filter(pk=user.pk)
+        return Post.objects.filter(author__in=user.following.all()).order_by('-created_at')
+
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
